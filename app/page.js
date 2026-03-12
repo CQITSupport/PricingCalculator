@@ -13,11 +13,15 @@ export default function GrossMarginCalculator() {
   const [fixedCostsExpanded, setFixedCostsExpanded] = useState(false);
   const [targetMarginPercent, setTargetMarginPercent] = useState(50);
   const [fixedCosts, setFixedCosts] = useState([
-    { id: 1, category: 'Rent & Facilities', amount: 5000 },
-    { id: 2, category: 'Salaries & Wages', amount: 25000 },
-    { id: 3, category: 'Insurance', amount: 2000 },
-    { id: 4, category: 'Utilities', amount: 1500 },
-    { id: 5, category: 'Marketing', amount: 5000 },
+    { id: 1, category: 'Salaries & Contracted Labor', amount: 0 },
+    { id: 2, category: 'Sales & Marketing', amount: 0 },
+    { id: 3, category: 'Insurance', amount: 0 },
+    { id: 4, category: 'Technology', amount: 0 },
+    { id: 5, category: 'Professional Services', amount: 0 },
+    { id: 6, category: 'Rent', amount: 0 },
+    { id: 7, category: 'Travel & Entertainment', amount: 0 },
+    { id: 8, category: 'R&D', amount: 0 },
+    { id: 9, category: 'Service/Support', amount: 0 },
   ]);
 
   // Tips Section State
