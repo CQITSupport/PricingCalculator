@@ -10,7 +10,7 @@ export default function GrossMarginCalculator() {
   const [manufacturingCost, setManufacturingCost] = useState(0);
   const [shippingFulfillment, setShippingFulfillment] = useState(0);
   const [otherDirectCosts, setOtherDirectCosts] = useState(0);
-  const [unitsProjected, setUnitsProjected] = useState(10000);
+  const [unitsProjected, setUnitsProjected] = useState(1);
 
   // Fixed Costs Section State
   const [fixedCostsExpanded, setFixedCostsExpanded] = useState(false);
