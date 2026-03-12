@@ -372,7 +372,7 @@ Target Pricing:
           />
           <h1 className="text-2xl md:text-3xl font-bold mb-3 tracking-tight">
             <span className="bg-gradient-to-r from-[#065399] to-[#0da4dd] bg-clip-text text-transparent">
-              Gross Profit Calculator
+              Profit & Pricing Calculator
             </span>
           </h1>
           <div className="flex items-center justify-center gap-2 mb-2">
