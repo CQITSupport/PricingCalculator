@@ -31,6 +31,7 @@ const InputField = ({ label, value, onChange, prefix = '', suffix = '', hint = '
         type="number"
         value={value}
         onChange={(e) => onChange(Number(e.target.value))}
+        onFocus={(e) => e.target.select()}
         min={min}
         max={max}
         step={step}
