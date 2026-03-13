@@ -1,8 +1,8 @@
 'use client';
- 
+
 import { useState, useMemo } from 'react';
 import { Calculator, TrendingUp, DollarSign, Percent, ChevronDown, ChevronUp, Plus, Trash2, Share2, Download, Target, Info } from 'lucide-react';
- 
+
 export default function GrossMarginCalculator() {
   // Gross Profit Section State - Itemized Costs
   const [revenuePerUnit, setRevenuePerUnit] = useState(100);
@@ -11,7 +11,7 @@ export default function GrossMarginCalculator() {
   const [shippingFulfillment, setShippingFulfillment] = useState(0);
   const [otherDirectCosts, setOtherDirectCosts] = useState(0);
   const [unitsProjected, setUnitsProjected] = useState(10000);
- 
+
   // Fixed Costs Section State - Categories with Entries
   const [fixedCostsExpanded, setFixedCostsExpanded] = useState(false);
   const [targetMarginPercent, setTargetMarginPercent] = useState(50);
@@ -26,11 +26,11 @@ export default function GrossMarginCalculator() {
     { id: 8, name: 'R&D', expanded: false, entries: [{ id: 1, description: '', amount: 0 }] },
     { id: 9, name: 'Service/Support', expanded: false, entries: [{ id: 1, description: '', amount: 0 }] },
   ]);
- 
+
   // Tips Section State
   const [showTips, setShowTips] = useState(false);
   const [showBenchmarks, setShowBenchmarks] = useState(false);
- 
+
   // Add new category
   const addCategory = () => {
     const newId = Math.max(...fixedCostCategories.map((c) => c.id), 0) + 1;
@@ -41,28 +41,28 @@ export default function GrossMarginCalculator() {
       entries: [{ id: 1, description: '', amount: 0 }] 
     }]);
   };
- 
+
   // Remove category
   const removeCategory = (categoryId) => {
     if (fixedCostCategories.length > 1) {
       setFixedCostCategories(fixedCostCategories.filter((c) => c.id !== categoryId));
     }
   };
- 
+
   // Update category name
   const updateCategoryName = (categoryId, name) => {
     setFixedCostCategories(
       fixedCostCategories.map((c) => (c.id === categoryId ? { ...c, name } : c))
     );
   };
- 
+
   // Toggle category expanded
   const toggleCategory = (categoryId) => {
     setFixedCostCategories(
       fixedCostCategories.map((c) => (c.id === categoryId ? { ...c, expanded: !c.expanded } : c))
     );
   };
- 
+
   // Add entry to category
   const addEntry = (categoryId) => {
     setFixedCostCategories(
@@ -75,7 +75,7 @@ export default function GrossMarginCalculator() {
       })
     );
   };
- 
+
   // Remove entry from category
   const removeEntry = (categoryId, entryId) => {
     setFixedCostCategories(
@@ -87,7 +87,7 @@ export default function GrossMarginCalculator() {
       })
     );
   };
- 
+
   // Update entry
   const updateEntry = (categoryId, entryId, field, value) => {
     setFixedCostCategories(
@@ -102,12 +102,12 @@ export default function GrossMarginCalculator() {
       })
     );
   };
- 
+
   // Calculate category total
   const getCategoryTotal = (category) => {
     return category.entries.reduce((sum, e) => sum + (e.amount || 0), 0);
   };
- 
+
   // Calculations
   const calculations = useMemo(() => {
     const revenue = revenuePerUnit || 0;
@@ -116,7 +116,7 @@ export default function GrossMarginCalculator() {
     const shipping = shippingFulfillment || 0;
     const otherDirect = otherDirectCosts || 0;
     const units = unitsProjected || 0;
- 
+
     // Total cost per unit (sum of all direct costs)
     const totalCostPerUnit = commission + manufacturing + shipping + otherDirect;
     
@@ -125,25 +125,25 @@ export default function GrossMarginCalculator() {
     const totalRevenue = revenue * units;
     const totalCosts = totalCostPerUnit * units;
     const totalGrossProfit = grossProfitPerUnit * units;
- 
+
     // Calculate total fixed costs from all categories and entries
     const totalFixedCosts = fixedCostCategories.reduce(
       (sum, cat) => sum + cat.entries.reduce((entrySum, e) => entrySum + (e.amount || 0), 0),
       0
     );
- 
+
     const netProfit = totalGrossProfit - totalFixedCosts;
     const netMarginPercent = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0;
- 
+
     // Break-even calculation
     const breakEvenUnits =
       grossProfitPerUnit > 0 ? Math.ceil(totalFixedCosts / grossProfitPerUnit) : 0;
- 
+
     // Target margin pricing
     const targetMargin = targetMarginPercent || 0;
     const suggestedPrice =
       targetMargin < 100 && totalCostPerUnit > 0 ? totalCostPerUnit / (1 - targetMargin / 100) : 0;
- 
+
     return {
       totalCostPerUnit,
       grossProfitPerUnit,
@@ -158,7 +158,7 @@ export default function GrossMarginCalculator() {
       suggestedPrice,
     };
   }, [revenuePerUnit, commissionPerUnit, manufacturingCost, shippingFulfillment, otherDirectCosts, unitsProjected, fixedCostCategories, targetMarginPercent]);
- 
+
   const formatCurrency = (value) => {
     if (value >= 1e12) return `$${(value / 1e12).toFixed(1)}T`;
     if (value >= 1e9) return `$${(value / 1e9).toFixed(1)}B`;
@@ -166,7 +166,7 @@ export default function GrossMarginCalculator() {
     if (value >= 1e3) return `$${(value / 1e3).toFixed(1)}K`;
     return `$${value.toFixed(0)}`;
   };
- 
+
   const formatFullCurrency = (value) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -175,7 +175,7 @@ export default function GrossMarginCalculator() {
       maximumFractionDigits: 0,
     }).format(value);
   };
- 
+
   const copyToClipboard = () => {
     const fixedCostDetails = fixedCostCategories.map(cat => {
       const categoryTotal = getCategoryTotal(cat);
@@ -188,7 +188,7 @@ export default function GrossMarginCalculator() {
       
       return `  ${cat.name || 'Unnamed Category'}: ${formatFullCurrency(categoryTotal)}${entriesText ? '\n' + entriesText : ''}`;
     }).filter(Boolean).join('\n');
- 
+
     const text = `Gross Profit & Pricing Analysis
 ━━━━━━━━━━━━━━━━━━━━━━
 Unit Economics:
@@ -203,22 +203,22 @@ Unit Economics:
   
   Gross Profit per Unit: ${formatFullCurrency(calculations.grossProfitPerUnit)}
   Gross Margin %: ${calculations.grossMarginPercent.toFixed(1)}%
- 
+
 Projections (${unitsProjected.toLocaleString()} units):
   Total Revenue: ${formatFullCurrency(calculations.totalRevenue)}
   Total Direct Costs: ${formatFullCurrency(calculations.totalCosts)}
   Gross Profit: ${formatFullCurrency(calculations.totalGrossProfit)}
- 
+
 Fixed Costs (Operating Expenses):
 ${fixedCostDetails || '  No fixed costs entered'}
   ─────────────────────
   Total Fixed Costs: ${formatFullCurrency(calculations.totalFixedCosts)}
- 
+
 Profitability:
   Net Profit: ${formatFullCurrency(calculations.netProfit)}
   Net Margin: ${calculations.netMarginPercent.toFixed(1)}%
   Break-Even Units: ${calculations.breakEvenUnits.toLocaleString()}
- 
+
 Target Pricing:
   Target Margin: ${targetMarginPercent}%
   Suggested Price: ${formatFullCurrency(calculations.suggestedPrice)}`;
@@ -226,7 +226,7 @@ Target Pricing:
     navigator.clipboard.writeText(text);
     alert('Results copied to clipboard!');
   };
- 
+
   const generatePDF = async () => {
     const jsPDF = (await import('jspdf')).default;
     const doc = new jsPDF();
@@ -409,7 +409,7 @@ Target Pricing:
     
     doc.save('gross-margin-analysis.pdf');
   };
- 
+
   const InputField = ({ label, value, onChange, prefix = '', suffix = '', hint = '', min = 0, max, step = 1 }) => (
     <div className="mb-4">
       <label className="block text-sm font-medium text-gray-700 mb-1">{label}</label>
@@ -429,7 +429,7 @@ Target Pricing:
       {hint && <p className="mt-1 text-xs text-gray-500">{hint}</p>}
     </div>
   );
- 
+
   const ResultCard = ({ title, value, subtitle, color, icon: Icon, isPercent = false }) => (
     <div className={`p-5 rounded-xl ${color} border transition-transform hover:scale-[1.02]`}>
       <div className="flex items-center gap-2 mb-1">
@@ -443,7 +443,7 @@ Target Pricing:
       {subtitle && <p className="text-xs text-gray-500 mt-2">{subtitle}</p>}
     </div>
   );
- 
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-blue-50">
       <div className="max-w-4xl mx-auto p-4 md:p-8">
@@ -468,7 +468,7 @@ Target Pricing:
             Calculate gross profit per transaction and optimize pricing.
           </p>
         </div>
- 
+
         {/* Results Summary */}
         <div className="grid gap-4 mb-6">
           <ResultCard 
@@ -496,7 +496,7 @@ Target Pricing:
             />
           </div>
         </div>
- 
+
         {/* Action Buttons */}
         <div className="flex gap-3 mb-6">
           <button
@@ -514,7 +514,7 @@ Target Pricing:
             Copy Results
           </button>
         </div>
- 
+
         {/* Section 1: Unit Economics */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 mb-6">
           <div className="flex items-center gap-2 mb-1">
@@ -533,7 +533,7 @@ Target Pricing:
               hint="Price charged per unit/transaction"
             />
           </div>
- 
+
           {/* Direct Costs */}
           <div className="bg-gray-50 rounded-xl p-4 mb-4">
             <h3 className="text-sm font-semibold text-gray-700 mb-3">Direct Costs per Unit</h3>
@@ -572,7 +572,7 @@ Target Pricing:
               <span className="text-lg font-bold text-gray-900">{formatFullCurrency(calculations.totalCostPerUnit)}</span>
             </div>
           </div>
- 
+
           {/* Projected Units */}
           <div className="mb-4">
             <InputField
@@ -583,13 +583,13 @@ Target Pricing:
               step={100}
             />
           </div>
- 
+
           {/* Summary */}
           <div className="mt-4 bg-blue-50 rounded-lg p-3 text-sm text-blue-800">
             <strong>Gross Profit per Unit:</strong> {formatFullCurrency(revenuePerUnit)} − {formatFullCurrency(calculations.totalCostPerUnit)} = {formatFullCurrency(calculations.grossProfitPerUnit)} ({calculations.grossMarginPercent.toFixed(1)}% margin)
           </div>
         </div>
- 
+
         {/* Section 2: Fixed Costs & Pricing (Collapsible) */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-6">
           <button
@@ -605,7 +605,7 @@ Target Pricing:
             </div>
             {fixedCostsExpanded ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
           </button>
- 
+
           {fixedCostsExpanded && (
             <div className="px-6 pb-6 border-t border-gray-100">
               <div className="mt-4">
@@ -620,7 +620,7 @@ Target Pricing:
                     Add Category
                   </button>
                 </div>
- 
+
                 <div className="space-y-3">
                   {fixedCostCategories.map((category) => (
                     <div
@@ -653,7 +653,7 @@ Target Pricing:
                           <Trash2 size={16} />
                         </button>
                       </div>
- 
+
                       {/* Category Entries */}
                       {category.expanded && (
                         <div className="p-3 space-y-2">
@@ -697,7 +697,7 @@ Target Pricing:
                     </div>
                   ))}
                 </div>
- 
+
                 <div className="mt-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
                   <div className="flex items-center justify-between">
                     <span className="font-medium text-gray-700">Total Fixed Costs</span>
@@ -707,7 +707,7 @@ Target Pricing:
                   </div>
                 </div>
               </div>
- 
+
               {/* Target Margin Pricing */}
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <h3 className="font-semibold text-gray-900 mb-4">Target Margin Pricing</h3>
@@ -733,7 +733,7 @@ Target Pricing:
                   </div>
                 </div>
               </div>
- 
+
               {/* Profitability Results */}
               <div className="mt-6 pt-6 border-t border-gray-200">
                 <h3 className="font-semibold text-gray-900 mb-4">Profitability Analysis</h3>
@@ -766,7 +766,7 @@ Target Pricing:
                   </div>
                 </div>
               </div>
- 
+
               {/* Pricing Insight */}
               {unitsProjected > 0 && calculations.grossProfitPerUnit > 0 && (
                 <div className={`mt-4 rounded-lg p-3 text-sm ${unitsProjected >= calculations.breakEvenUnits ? 'bg-emerald-50 text-emerald-800' : 'bg-amber-50 text-amber-800'}`}>
@@ -798,7 +798,7 @@ Target Pricing:
             </div>
           )}
         </div>
- 
+
         {/* Industry Benchmarks */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-6">
           <button
@@ -849,7 +849,7 @@ Target Pricing:
             </div>
           )}
         </div>
- 
+
         {/* Tips Section */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden mb-6">
           <button
@@ -886,7 +886,7 @@ Target Pricing:
             </div>
           )}
         </div>
- 
+
         {/* Footer */}
         <footer className="text-center text-sm text-gray-500 py-8">
           <p>© CQuence Health. No data is stored or shared.</p>
